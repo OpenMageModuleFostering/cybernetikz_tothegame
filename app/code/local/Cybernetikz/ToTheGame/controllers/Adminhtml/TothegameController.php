@@ -6,19 +6,11 @@
 *	Website		: 	http://www.cybernetikz.com
 */
 
-class Cybernetikz_ToTheGame_Adminhtml_ToTheGameController extends Mage_Adminhtml_Controller_Action
+class Cybernetikz_ToTheGame_Adminhtml_TothegameController extends Mage_Adminhtml_Controller_Action
 {
     
 	protected $_startTime;
 	protected $gameCount = 0;
-	
-	/* 
-		Diclar destruct
-	*/
-	/*function __destruct(){
-		$this->_PhpShutdown();
-	}*/
-	
 	
 	/**
      * Init actions
@@ -91,11 +83,9 @@ class Cybernetikz_ToTheGame_Adminhtml_ToTheGameController extends Mage_Adminhtml
 	protected function importGame($gameId) {
 		
 		$SUBSCRIBER_ID = Mage::helper('cybernetikz_tothegame')->getSubscriberId(); // Subscriber Id
-		$IMPORT_USE_CACHE = 1;
-		$IMPORT_CACHE_TTL = (Mage::helper('cybernetikz_tothegame')->getImportCacheTTL()*3600); // # of seconds when the cache is set to expire
 		$gameProducttId = "";
 		
-		$gameUrl = 'http://export.tothegame.com/gamefeeder/v3/gamelookup.aspx?&subscriberid='.$SUBSCRIBER_ID.'&gameid='.$gameId;
+		$gameUrl = 'http://export2.tothegame.com/gamefeeder/v3/gamelookup.aspx?subscriberid='.$SUBSCRIBER_ID.'&gameid='.$gameId;
 		
 		$xml = new DOMDocument(); // Create new DOM object
 		
@@ -109,26 +99,10 @@ class Cybernetikz_ToTheGame_Adminhtml_ToTheGameController extends Mage_Adminhtml
 				
 		try {
 			
-			// Create Feed Upload Directtory
-			$upload_gamefeed = Mage::getBaseDir('media') . DS .'gamefeed';
-			if (!is_dir($upload_gamefeed)) {
-				if (!mkdir($upload_gamefeed, 0777, true)) {
-					echo "<span style='color:red;'>--Error: Failed to create folders...</span><br>";
-					return;
-				}
-			}
-			
-			$gamefeed_file_path = $upload_gamefeed. DS .$gameId.".xml";
-			
-			if (file_exists($gamefeed_file_path) && $IMPORT_USE_CACHE && time() - filectime($gamefeed_file_path) < $IMPORT_CACHE_TTL) {
-				echo "-- Loading game data from cache<br>";
-				$xml->load($gamefeed_file_path);
-			} else {
-				echo "-- Loading game data from publisher<br>";
-				$xml->load($gameUrl);
-				// cache the file
-				$xml->save($gamefeed_file_path);
-			}
+			// Load XML Feed
+			echo "-- Loading game data from publisher<br>";
+			$xml->load($gameUrl);
+			$xml->saveXML();
 			
 			// Check Product Availability
 			if(!$this->_getElementValue($xml, 'OfficialTitle')){
@@ -453,22 +427,29 @@ class Cybernetikz_ToTheGame_Adminhtml_ToTheGameController extends Mage_Adminhtml
 				
 				// Assign Packsthot Image as Product Images
 				foreach($_productData['Packshots'] as $type => $PackshotImage){
-					$importDir = Mage::getBaseDir('media') . DS . 'import'.DS;
-					$image_name = $gameId."-packshot"."-".$type.".jpg";
-					$packImageUrl = $importDir. DS .$image_name;
-					// Copy Image from totheGame server to local server
-					if(copy($PackshotImage, $packImageUrl)){
-						echo "-- upl. ", $PackshotImage, " to Local Server<br>";
-						// Add three image sizes to media gallery
-						$_product->addImageToMediaGallery($packImageUrl, array('image','thumbnail','small_image'), false, false); // Assigning packshot image, thumb and small image to media gallery
-						break;
+					// Thumb image skip
+					if($type == "UrlThumb"){
+						continue;
+					}else{
+						$importDir = Mage::getBaseDir('media') . DS . 'import';
+						$image_name = $gameId."-packshot"."-".$type.".jpg";
+						$packImageUrl = $importDir. DS .$image_name;
+						// Copy Image from totheGame server to local server
+						if(copy($PackshotImage, $packImageUrl)){
+							echo "-- upl. ", $PackshotImage, " to Local Server<br>";
+							// Add three image sizes to media gallery
+							$_product->addImageToMediaGallery($packImageUrl, array('image','thumbnail','small_image'), false, false); // Assigning packshot image, thumb and small image to media gallery
+							break;
+							
+							unlink($packImageUrl); // Remove Image after add to product image
+						}
 					}
 				}
 				
 				// Assign Screenshot Image as Product Images
 				foreach($_productData['Screenshots'] as $type => $screenshotImages){
 					$screenshotImage = $screenshotImages['UrlLarge'];
-					$importDir = Mage::getBaseDir('media') . DS . 'import'.DS;
+					$importDir = Mage::getBaseDir('media') . DS . 'import';
 					$image_name = $gameId."-screenshot"."-".$type.".jpg";
 					$screenshotImageUrl = $importDir. DS .$image_name;
 					// Copy Image from totheGame server to local server
@@ -476,6 +457,7 @@ class Cybernetikz_ToTheGame_Adminhtml_ToTheGameController extends Mage_Adminhtml
 						echo "-- upl. ", $screenshotImage, " to Local Server<br>";
 						// Add three image sizes to media gallery
 						$_product->addImageToMediaGallery($screenshotImageUrl, false, false, false); // Assigning screenshot image to media gallery
+						unlink($screenshotImageUrl); // Remove Image after add to product image
 					}
 				}
 				
@@ -536,10 +518,7 @@ class Cybernetikz_ToTheGame_Adminhtml_ToTheGameController extends Mage_Adminhtml
 				$stores=Mage::getModel('core/store')->getCollection()->load()->getAllIds();
 				foreach($stores as $estoreid){
 					$storeids[]=$estoreid;
-				}				
-				//print_r($websiteids);
-				//print_r($storeids);
-				//exit;
+				}
 				
 				$product = new Mage_Catalog_Model_Product();
 				
@@ -591,22 +570,29 @@ class Cybernetikz_ToTheGame_Adminhtml_ToTheGameController extends Mage_Adminhtml
 								
 				// Assign Packsthot Image as Product Images
 				foreach($_productData['Packshots'] as $type => $PackshotImage){
-					$importDir = Mage::getBaseDir('media') . DS . 'import'.DS;
-					$image_name = $gameId."-packshot"."-".$type.".jpg";
-					$packImageUrl = $importDir. DS .$image_name;
-					// Copy Image from totheGame server to local server
-					if(copy($PackshotImage, $packImageUrl)){
-						echo "-- upl. ", $PackshotImage, " to Local Server<br>";
-						// Add three image sizes to media gallery
-						$product->addImageToMediaGallery($packImageUrl, array('image','thumbnail','small_image'), false, false); // Assigning packshot image, thumb and small image to media gallery
-						break;
+					// Thumb image skip
+					if($type == "UrlThumb"){
+						continue;
+					}else{
+						$importDir = Mage::getBaseDir('media') . DS . 'import';
+						$image_name = $gameId."-packshot"."-".$type.".jpg";
+						$packImageUrl = $importDir. DS .$image_name;
+						// Copy Image from totheGame server to local server
+						if(copy($PackshotImage, $packImageUrl)){
+							echo "-- upl. ", $PackshotImage, " to Local Server<br>";
+							// Add three image sizes to media gallery
+							$product->addImageToMediaGallery($packImageUrl, array('image','thumbnail','small_image'), false, false); // Assigning packshot image, thumb and small image to media gallery
+							break;
+							
+							unlink($packImageUrl); // Remove Image after add to product image
+						}
 					}
 				}
 				
 				// Assign Screenshot Image as Product Images
 				foreach($_productData['Screenshots'] as $type => $screenshotImages){
 					$screenshotImage = $screenshotImages['UrlLarge'];
-					$importDir = Mage::getBaseDir('media') . DS . 'import'.DS;
+					$importDir = Mage::getBaseDir('media') . DS . 'import';
 					$image_name = $gameId."-screenshot"."-".$type.".jpg";
 					$screenshotImageUrl = $importDir. DS .$image_name;
 					// Copy Image from totheGame server to local server
@@ -614,10 +600,10 @@ class Cybernetikz_ToTheGame_Adminhtml_ToTheGameController extends Mage_Adminhtml
 						echo "-- upl. ", $screenshotImage, " to Local Server<br>";
 						// Add three image sizes to media gallery
 						$product->addImageToMediaGallery($screenshotImageUrl, false, false, false); // Assigning screenshot image to media gallery
+						
+						unlink($screenshotImageUrl); // Remove Image after add to product image
 					}
 				}
-				
-				//print_r($product->getData()); exit;
 				
 				try {
 					$product->save();
@@ -628,12 +614,6 @@ class Cybernetikz_ToTheGame_Adminhtml_ToTheGameController extends Mage_Adminhtml
 					return;
 				}
 			}
-			
-			/*$index_arr=array(1,4);
-			foreach($index_arr as $index){
-				$process = Mage::getModel('index/process')->load($index);
-				$process->reindexAll();	
-			}*/
 	
 		} catch (Exception $e) {
 			echo '--! exception: ', $e->getMessage(), "<br>";
