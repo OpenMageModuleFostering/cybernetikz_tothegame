@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<config>
+    <menu>
+		<catalog>
+        	<children>
+				 <tothegame translate="title" module="cybernetikz_tothegame">
+					<title>ToTheGame Feed Import</title>
+					<action>adminhtml/tothegame/gameimport</action>
+					<sort_order>25</sort_order>
+				 </tothegame>
+    		</children>
+		</catalog>
+	</menu>
+
+    <acl>
+        <resources>
+            <admin>
+                <children>
+					<catalog>
+						<children>
+							<tothegame translate="title" module="cybernetikz_tothegame">
+								<title>ToTheGame Feed Import</title>
+							</tothegame>
+                    	</children>
+					</catalog>
+					<system>
+                        <children>
+                            <config>
+                                <children>
+                                    <tothegame translate="title" module="cybernetikz_tothegame">
+                                        <title>ToTheGame Settings</title>
+                                    </tothegame>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>

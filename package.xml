@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package>
+    <name>Cybernetikz_ToTheGame</name>
+    <version>0.1.0</version>
+    <stability>stable</stability>
+    <license uri="http://opensource.org/licenses/osl-3.0.php">Open Software License (OSL 3.0)</license>
+    <channel>community</channel>
+    <extends/>
+    <summary>Automatically import (add/update) product information from ToTheGame game feed for your store.</summary>
+    <description>- Allow You to Import Product from ToTheGame Feeder into Magento&#xD;
+- Allow You to Show All Products Info into Your Product Detail Page like Title, Descriptions, Platform, Boxshots, Screenshots, Videos, Genre, Publisher, Release Date, Developers etc</description>
+    <notes>- ToTheGame Feed Import Implement and Ready to Use</notes>
+    <authors><author><name>CyberNetikz</name><user>CyberNetikz</user><email>sales@cybernetikz.com</email></author></authors>
+    <date>2015-01-08</date>
+    <time>11:46:44</time>
+    <contents><target name="mageetc"><dir name="modules"><file name="Cybernetikz_ToTheGame.xml" hash="56a3597fb67967ea0407b087d251c4e3"/></dir></target><target name="magelocal"><dir name="Cybernetikz"><dir name="ToTheGame"><dir name="Block"><dir name="Adminhtml"><dir name="System"><dir name="Config"><dir name="Fieldset"><file name="Hint.php" hash="595da4f66a0fe867d47c9cdd71015823"/></dir></dir></dir></dir></dir><dir name="Helper"><file name="Data.php" hash="f86910ee11b8e1330cb9ea157ddacf76"/></dir><dir name="Model"><dir name="Resource"><dir name="Mysql4"><file name="Setup.php" hash="a30938317dace0f4c48832dfb06773d0"/></dir></dir></dir><dir name="controllers"><dir name="Adminhtml"><file name="ToTheGameController.php" hash="52ec51265f1b1a521d89105066461d6f"/></dir></dir><dir name="etc"><file name="adminhtml.xml" hash="0667d87d1bcccac7d5f9f1cd3719432c"/><file name="config.xml" hash="9763bed945675a401751cb35d3eda237"/><file name="system.xml" hash="180d791b1f52a8bb78a901bb13499aed"/></dir><dir name="sql"><dir name="tothegame_setup"><file name="mysql4-install-0.1.0.php" hash="57ee1befe5d68afc4e7faa50487b8333"/></dir></dir></dir></dir></target><target name="magedesign"><dir name="adminhtml"><dir name="default"><dir name="default"><dir name="layout"><file name="cybernetikz_tothegame.xml" hash="aa961d53d71288758b51cee8d3d155d3"/></dir><dir name="template"><dir name="cybernetikz"><dir name="tothegame"><file name="gameimport.phtml" hash="005fdd07c423b199f5a3661384fc8124"/><dir name="system"><dir name="config"><dir name="fieldset"><file name="hint.phtml" hash="77c083d7b58e29bd9f6a4b432a9d5ce1"/></dir></dir></dir></dir></dir></dir></dir></dir></dir></target><target name="mageskin"><dir name="adminhtml"><dir name="default"><dir name="default"><dir name="cybernetikz"><dir name="tothegame"><dir name="images"><file name="indicator.gif" hash="86b1ac6d1c485d54efa3a53643e91ceb"/></dir><dir name="js"><file name="jquery.js" hash="a9331828c517ac5d97f93b3cfdbcc9bc"/></dir></dir></dir></dir></dir></dir></target></contents>
+    <compatible/>
+    <dependencies><required><php><min>5.1.0</min><max>6.0.0</max></php></required></dependencies>
+</package>

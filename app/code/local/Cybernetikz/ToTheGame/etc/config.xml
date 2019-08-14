@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<config>    
+    <modules>
+        <Cybernetikz_ToTheGame>
+            <version>0.1.0</version>
+        </Cybernetikz_ToTheGame>
+    </modules>
+	<global>
+		<helpers>
+            <cybernetikz_tothegame>
+                <class>Cybernetikz_ToTheGame_Helper</class>
+            </cybernetikz_tothegame>
+        </helpers>
+		<blocks>
+			<cybernetikz_tothegame>
+                <class>Cybernetikz_ToTheGame_Block</class>
+            </cybernetikz_tothegame>
+		</blocks>
+		<resources>
+			<tothegame_setup>
+				<setup>
+					<module>Cybernetikz_ToTheGame</module>
+					<class>Cybernetikz_ToTheGame_Model_Resource_Mysql4_Setup</class>
+				</setup>
+				<connection>
+					<use>core_setup</use>
+				</connection>
+			</tothegame_setup>
+			<tothegame_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </tothegame_write>
+            <tothegame_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </tothegame_read>
+		</resources>	
+	</global>	
+	<admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <Cybernetikz_ToTheGame before="Mage_Adminhtml">Cybernetikz_ToTheGame_Adminhtml</Cybernetikz_ToTheGame>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+	<adminhtml>
+        <layout>
+            <updates>
+                <cybernetikz_tothegame>
+                    <file>cybernetikz_tothegame.xml</file>
+                </cybernetikz_tothegame>
+            </updates>
+        </layout>
+		<acl>
+			<resources>
+				<all>
+					<title>Allow Everything</title>
+				</all>
+				<admin>
+					<children>
+						<system>
+							<children>
+								<config>
+									<children>
+										<tothegame translate="label" module="cybernetikz_tothegame">
+											<label>CyberNetikz - All</label>
+											<sort_order>10</sort_order>
+										</tothegame>
+									</children>
+								</config>
+							</children>
+						</system>
+					</children>
+				</admin>
+			</resources>
+		</acl>	
+    </adminhtml>
+	
+	<default>
+	  <tothegame>		
+		
+		<setting>
+			<importcachettl>24</importcachettl>
+		</setting>
+		
+	  </tothegame>
+	</default>
+
+</config>

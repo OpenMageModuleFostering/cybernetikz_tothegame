@@ -1,0 +1,39 @@
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN);?>adminhtml/default/default/cybernetikz/tothegame/js/jquery.js"></script>
+<script type="text/javascript">jQuery.noConflict();</script>
+<div class="content-header">
+    <table cellspacing="0" class="grid-header">
+        <tr>
+            <td><h3><?php echo $this->__('Game Feed Import')?></h3></td>
+        </tr>
+    </table>
+</div>
+
+<div class="wrap">
+	<div style="width:80%; float:left; margin-right:1%;">
+		<h4><?php echo $this->__('Single Game Import')?></h4>
+		<form action="<?php echo Mage::helper("adminhtml")->getUrl("adminhtml/tothegame/singlegameimport");?>" method="get" target="sync_output_test" class="sync-form">
+			<p>
+				<label for="cnc_game_id">Game ID</label>
+				<input type="text" name="game_id[]" id="cnc_game_id" />
+				<button type="submit" class="scalable save">Run</button>
+			</p>
+		</form>
+		<p>
+			<small><?php echo $this->__('Only game with a given Game Id will be import. Please use comma(,) separator for muliple Game Ids.'); ?></small>
+		</p>
+	</div>
+	<div style="clear:both;"></div>
+
+	<h4>Report <img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN);?>adminhtml/default/default/cybernetikz/tothegame/images/indicator.gif" alt="Please wait&hellip;" title="Please wait&hellip;" class="work-indicator" style="display:none;" /></h4>
+	<iframe id="sync-output-test" name="sync_output_test" src="about:blank" frameborder="1" width="100%" height="500" style="border:1px solid #DADADA;"><?php echo $this->__('Your browser does not support floating frames (iframe HTML element). Please upgrade your browser and try again.'); ?></iframe>
+</div>
+<script type="text/javascript">
+	jQuery(function () {
+		jQuery('.sync-form').submit(function () {
+			jQuery('.work-indicator').show();
+			jQuery('#sync-output-test').load(function () {
+				jQuery('.work-indicator').hide();
+			});
+		});
+	});
+</script>
